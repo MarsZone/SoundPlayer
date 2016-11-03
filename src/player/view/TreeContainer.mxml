@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="200"
+		 creationComplete="windowedapplication1_creationCompleteHandler(event)"
+		 >
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import player.events.utils.ButtonClickEvent;
+			import player.events.utils.ItemRenderEvent;
+			
+			public static var ctir:CustomTreeItemRenderer;
+			public static const ITEM_CHOSE:String="ITEM_CHOSE";
+			
+			public function setTreeData(data:ArrayCollection):void
+			{
+				tree.dataProvider = data;
+			}
+			protected function windowedapplication1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.removeEventListener(FlexEvent.CREATION_COMPLETE, windowedapplication1_creationCompleteHandler);
+				tree.addEventListener(ITEM_CHOSE,onDoubleClick);
+			}
+			
+			protected function onDoubleClick(event:Event):void
+			{
+				// TODO Auto-generated method stub
+				this.dispatchEvent(new ItemRenderEvent(ItemRenderEvent.DOUBLE_CLICK,TreeContainer.ctir));
+			}
+			
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<s:Button id="btn" label="Open"  
+			  click="dispatchEvent(new ButtonClickEvent(ButtonClickEvent.CHOOSE_FOLDER));"
+			  />
+	<mx:Tree id="tree" top="72" left="0"
+			 labelField="name"
+			 itemRenderer="player.view.CustomTreeItemRenderer"
+			 showRoot="false" 
+			 height="200" width="100%"/>
+</s:Group>

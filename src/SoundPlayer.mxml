@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   xmlns:rl2="robotlegs.bender.mxml.*"
+					   xmlns:mvcs="robotlegs.bender.bundles.mvcs.*"
+					   xmlns:player = "player.*"
+					   xmlns:view="player.view.*"
+					   title="AIR_SOUND_PLAYER"
+					   creationComplete="windowedapplication1_creationCompleteHandler(event)"
+					   >
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<fx:Declarations>
+		<rl2:ContextBuilderTag>
+			<mvcs:MVCSBundle/>
+			<player:AppConfig/>
+		</rl2:ContextBuilderTag>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			protected function windowedapplication1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.removeEventListener(FlexEvent.CREATION_COMPLETE, windowedapplication1_creationCompleteHandler);
+				this.status = "Created by mars.";
+			}
+		]]>
+	</fx:Script>
+	
+	<view:TreeContainer x="20" y="20"/>
+	<view:SoundPlayerContainer x="20" y="250"/>
+	
+	
+</s:WindowedApplication>

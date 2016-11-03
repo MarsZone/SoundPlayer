@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			[Bindable]
+			public var playing:Boolean = false;
+			[Bindable]
+			public var readyToPlay:Boolean = false;
+			
+			private var sound:Sound;
+			private var songLength:String;
+			private var soundChannel:SoundChannel;
+			
+			private function playResumeButtonState(readyToPlay:Boolean, playing:Boolean):Boolean{
+				if(readyToPlay && !playing){
+					return true;
+				}
+				return false;
+			}
+			public function setSongInfo(value:String):void {
+				//trace("Value:"+value);
+				songInfo.text += value + "\n";
+			}
+			public function reload():void{
+				songInfo.text="";
+			}
+			public function setSound(value:Sound):void{
+				this.sound = value;
+				var minutes:Number = Math.floor(sound.length / 1000 / 60);
+				var seconds:Number = Math.floor(sound.length / 1000) % 60;
+				songLength = minutes + ":" + seconds;
+				readyToPlay = true;
+				play();
+			}
+			protected function playButton_clickHandler(event:MouseEvent):void {
+				play();
+			}
+			
+			protected function resumeButton_clickHandler(event:MouseEvent):void {
+				play(soundChannel.position);
+			}
+			
+			protected function pauseButton_clickHandler(event:MouseEvent):void {
+				playing = false;
+				SoundMixer.stopAll(); 
+				playInfo.text = "Stopped";
+				removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+			}
+			protected function onEnterFrame(e:Event):void{              
+				var minutes:Number = Math.floor(soundChannel.position / 1000 / 60);
+				var seconds:Number = Math.floor(soundChannel.position / 1000) % 60;
+				playInfo.text = "playing "+ minutes + ':' + seconds + " of " + songLength;
+			}
+			protected function play(pos:Number=0):void{
+				playing = true;
+				soundChannel = sound.play(pos);				
+				addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			}
+		]]>
+	</fx:Script>
+	
+	<s:HGroup width="100%">
+		<s:Label id="playInfo" width="100%" height="40" verticalAlign="middle"/>                
+	</s:HGroup>
+	<s:HGroup>
+		<s:Button label="Pause" id="pauseButton" 
+				  click="pauseButton_clickHandler(event)" 
+				  enabled="{playing}"/>         
+		<s:Button label="Start Over" id="playButton" 
+				  click="playButton_clickHandler(event)" 
+				  enabled="{playResumeButtonState(readyToPlay,playing)}"/>      
+		<s:Button label="Resume" id="resumeButton" 
+				  click="resumeButton_clickHandler(event)" 
+				  enabled="{playResumeButtonState(readyToPlay,playing)}"/>              
+	</s:HGroup>
+	<s:TextArea id="songInfo" width="100%" height="200"/> 
+	
+</s:Group>
